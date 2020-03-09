@@ -1,8 +1,10 @@
 package game
 
 type ClientBoard struct {
-	safePoints map[Point]int
-	flags      map[Point]bool
+	safePoints    map[Point]int
+	flags         map[Point]bool
+	mines         []Point
+	activatedMine *Point
 }
 
 func NewClientBoard() *ClientBoard {
@@ -19,35 +21,29 @@ func (cl *ClientBoard) isDiscovered(point Point) bool {
 	return false
 }
 
-// The client_board is stored in json as:
-//
-// {
-// 	"state": "playing",
-// 	"safePoints": {
-// 		1: [
-// 			{"x": 1, "y": 4},
-// 			{"x": 2, "y": 2},
-// 			...
-// 			{"x": 8, "y": 2}
-// 		],
-// 		2: [
-// 			{"x": 3, "y": 4},
-// 			{"x": 7, "y": 2},
-// 			...
-// 			{"x": 5, "y": 9}
-// 		],
-// 		...
-// 		8: [
-// 			{"x": 11, "y": 3},
-// 		]
-// 	},
-// 	"flags": [
-// 		{"x": 11, "y": 2},
-// 		{"x": 10, "y": 4},
-// 		...
-// 		{"x": 5, "y": 8},
-// 	],
-// 	"bombs": []
-// }
-//
-// as is the most direct way we can encode out data given our internal representation
+func (cl *ClientBoard) discoverSafePoints(safe map[Point]int) {
+	for point, number := range safe {
+		cl.safePoints[point] = number
+	}
+}
+
+func (cl *ClientBoard) setMines(mines []Point, activated *Point) {
+	cl.mines = mines
+	cl.activatedMine = activated
+}
+
+func (cl *ClientBoard) SafePoints() map[Point]int {
+	return cl.safePoints
+}
+
+func (cl *ClientBoard) Mines() []Point {
+	return cl.mines
+}
+
+func (cl *ClientBoard) Flags() []Point {
+	return cl.mines
+}
+
+func (cl *ClientBoard) Activated() *Point {
+	return cl.activatedMine
+}
