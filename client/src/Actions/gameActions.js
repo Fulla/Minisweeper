@@ -1,5 +1,5 @@
-import { SET_SAFEPOINTS, START_BOARD } from '../constants';
-import { fetchGameState, fetchStartGame } from '../apiRequests';
+import { SET_SAFEPOINTS, START_BOARD, SET_ACTIVATED, SET_MINES, SET_STATUS } from '../constants';
+import { fetchGameState, fetchStartGame, fetchDiscoverTile } from '../apiRequests';
 
 // sync actions
 
@@ -19,31 +19,38 @@ function setSafePoints(safepoints) {
   }
 }
 
-// thunk actions
-
-
-export function getGameState() {
-
-  return (dispatch, getState) => {
-    
-    return fetchGameState()
-    .then(
-      (gameState) => {
-        dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
-        dispatch(setSafePoints(gameState.safepoints))
-      }
-    )
+function setMines(mines) {
+  return {
+    type: SET_MINES,
+    mines
   }
 }
+
+function setActivatedMine(activated) {
+  return {
+    type: SET_ACTIVATED,
+    activated
+  }
+}
+
+function setStatus(state) {
+  return {
+    type: SET_STATUS,
+    state
+  }
+}
+
+// thunk actions
 
 
 export function startGame() {
 
-  return (dispatch, getState) => {
+  return (dispatch) => {
     
-    return fetchStartGame()
+    return fetchStartGame(5, 5, 5)
     .then(
       (gameState) => {
+				console.log(gameState)
         dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
         dispatch(setSafePoints(gameState.safepoints))
       }
@@ -54,13 +61,32 @@ export function startGame() {
 
 export function resumeGame() {
 
-  return (dispatch, getState) => {
+  return (dispatch) => {
     
     return fetchGameState()
     .then(
       (gameState) => {
+				console.log(gameState)
         dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
         dispatch(setSafePoints(gameState.safepoints))
+      }
+    )
+  }
+}
+
+
+export function discoverTile(x, y) {
+
+  return (dispatch) => {
+    
+    return fetchDiscoverTile(x, y)
+    .then(
+      (gameState) => {
+				console.log(gameState)
+				dispatch(setSafePoints(gameState.safePoints))
+				dispatch(setMines(gameState.mines))
+				dispatch(setActivatedMine(gameState.activatedMine))
+				dispatch(setStatus(gameState.state))
       }
     )
   }

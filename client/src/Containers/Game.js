@@ -12,7 +12,7 @@ class Game extends React.Component {
 
     render() {
 			const { board } = this.props.game
-			const { startGame, resumeGame } = this.props.gameActions
+			const { startGame, resumeGame, discoverTile } = this.props.gameActions
 
 			console.log(board);
 			
@@ -20,7 +20,7 @@ class Game extends React.Component {
 			return (
 				<div className="App">
 					<h2>Minesweeper</h2>
-					<Board board={board} />
+					<Board board={board} discover={discoverTile}/>
 					<div className="Buttons">
 						<Button title="New game" action={startGame}/>
 						<Button title="Resume game" action={resumeGame}/>

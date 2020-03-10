@@ -21,12 +21,13 @@ export function fetchGameState() {
 }
 
 
-export function fetchStartGame() {
+export function fetchStartGame(files, columns, mines) {
 	let request = {
 		method: 'POST',
 		body: JSON.stringify({
-      files: 10,
-      columns: 10
+			files,
+			columns,
+			mines
     })
 	}
 	return makeRequest('new', request)
@@ -35,3 +36,16 @@ export function fetchStartGame() {
 	)
 }
 
+export function fetchDiscoverTile(file, column) {
+	let request = {
+		method: 'POST',
+		body: JSON.stringify({
+			file,
+			column,
+    })
+	}
+	return makeRequest('discover', request)
+	.then(
+		(res) => res.data
+	)
+}

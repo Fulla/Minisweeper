@@ -11,6 +11,8 @@ import (
 //
 // {
 // 	"state": "playing",
+//  "files": 5,
+//  "columns": 5,
 // 	"safePoints": {
 // 		1: [
 // 			{"x": 1, "y": 4},
@@ -48,6 +50,8 @@ type ExportedClientBoard struct {
 	Flags      []game.Point            `json:"flags"`
 	Mines      []game.Point            `json:"mines"`
 	Activated  *game.Point             `json:"activatedMine"`
+	Files      int                     `json:"files"`
+	Columns    int                     `json:"columns"`
 }
 
 func (gm *GamesManager) safePointsByNumber(points map[game.Point]int) map[string][]game.Point {
@@ -68,6 +72,7 @@ func (gm *GamesManager) ExportClientBoard(g *game.Game) (*ExportedClientBoard, e
 		return nil, errors.Errorf("Client board not found")
 	}
 	safe := gm.safePointsByNumber(cl.SafePoints())
+	fi, col := g.BoardDimensions()
 	exported := &ExportedClientBoard{
 		FullExport: true,
 		SafePoints: safe,
@@ -75,6 +80,8 @@ func (gm *GamesManager) ExportClientBoard(g *game.Game) (*ExportedClientBoard, e
 		Flags:      cl.Flags(),
 		Mines:      cl.Mines(),
 		Activated:  cl.Activated(),
+		Files:      fi,
+		Columns:    col,
 	}
 	return exported, nil
 }

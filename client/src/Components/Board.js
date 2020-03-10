@@ -5,10 +5,10 @@ import '../App.css';
 class Board extends React.Component {
     state = {}
 
-    renderCells = (row) => {
+    renderCells = (n, row) => {
 			return row.map((cell, index) => {
 					return (
-							<td key={index} className="Tile">{cell}</td>
+							<td key={index} className="Tile" onClick={() => this.props.discover(n, index)}>{cell}</td>
 					)
 				})
     }
@@ -17,7 +17,7 @@ class Board extends React.Component {
 			return table.map((row, index) => {
 				return (
 						<tr key={index}>
-							{this.renderCells(row)}
+							{this.renderCells(index, row)}
 						</tr>
 				)
 			})

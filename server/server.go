@@ -31,6 +31,7 @@ func (s *Server) newRouter() *gin.Engine {
 	api := r.Group("/api")
 	api.POST("/new", s.startGame)
 	api.GET("/resume", s.resumeGame)
+	api.POST("/discover", s.discoverTile)
 	return r
 }
 

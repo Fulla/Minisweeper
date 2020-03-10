@@ -2,6 +2,7 @@ package game
 
 import (
 	"math/rand"
+	"sync"
 
 	"github.com/pkg/errors"
 )
@@ -12,6 +13,7 @@ type Board struct {
 	minesCount int
 	// mines is a map just storing true at the points there is a mine
 	mines map[Point]bool
+	l     sync.Mutex
 }
 
 func NewBoard(f, c, m int) *Board {
@@ -21,6 +23,10 @@ func NewBoard(f, c, m int) *Board {
 		minesCount: m,
 		mines:      make(map[Point]bool),
 	}
+}
+
+func (b *Board) Dimensions() (int, int) {
+	return b.files, b.columns
 }
 
 func (b *Board) randomMineExcept(safe Point) {
@@ -34,7 +40,7 @@ func (b *Board) randomMineExcept(safe Point) {
 		if b.isMine(p) {
 			continue
 		}
-		b.mines[p] = true
+
 		break
 	}
 }
@@ -77,6 +83,10 @@ func (b *Board) numberOfMines(points []Point) (number int) {
 	return
 }
 
+// discovers a point of the board
+// if the point is a mine, returns true as the second return value
+// if the point is not surrounded by any mine, then it iteratively discover the surroundings
+// Returns a map with the number of surrounding mines for each discovered point
 func (b *Board) discover(point Point, omit func(Point) bool) (map[Point]int, bool) {
 	discovered := make(map[Point]int)
 	if b.isMine(point) {
@@ -104,10 +114,20 @@ func (b *Board) discover(point Point, omit func(Point) bool) (map[Point]int, boo
 }
 
 func (b *Board) isMine(p Point) bool {
+	b.l.Lock()
+	defer b.l.Unlock()
 	return b.mines[p]
 }
 
+func (b *Board) setMine(p Point) {
+	b.l.Lock()
+	defer b.l.Unlock()
+	b.mines[p] = true
+}
+
 func (b *Board) minesList() (mines []Point) {
+	b.l.Lock()
+	defer b.l.Unlock()
 	for m := range b.mines {
 		mines = append(mines, m)
 	}
