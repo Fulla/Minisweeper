@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 )
 
 type Server struct {
@@ -23,8 +23,37 @@ func NewServer(mgr *gamesmanager.GamesManager) *Server {
 	}
 }
 
+// func CORSMiddleware() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+
+// 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+// 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, Authorization")
+// 		c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length")
+// 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+
+// 		if c.Request.Method == "OPTIONS" {
+// 			c.AbortWithStatus(204)
+// 		} else {
+// 			c.Next()
+// 		}
+// 	}
+// }
+
 func (s *Server) newRouter() *gin.Engine {
 	r := gin.Default()
+
+	// r.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     []string{"http://localhost:3000"},
+	// 	AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
+	// 	AllowHeaders:     []string{"Origin", "Content-Type"},
+	// 	AllowCredentials: true,
+	// 	ExposeHeaders:    []string{"Content-Length"},
+	// }))
+	r.OPTIONS("/:path", func(c *gin.Context) {
+		log.Infof("getting option")
+		c.AbortWithStatus(204)
+	})
 
 	r.Use(static.Serve("/", static.LocalFile("client/build", true)))
 
