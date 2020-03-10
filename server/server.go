@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/Fulla/Minisweeper/gamesmanager"
 
@@ -34,8 +36,13 @@ func (s *Server) newRouter() *gin.Engine {
 
 func (s *Server) Serve(c context.Context) {
 	r := s.newRouter()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
 	httpServer := &http.Server{
-		Addr:    ":3000",
+		Addr:    fmt.Sprintf("0.0.0.0:%s", port),
 		Handler: r,
 	}
 	go func() {
