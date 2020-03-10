@@ -1,10 +1,17 @@
 import { START_BOARD, SET_SAFEPOINTS } from '../constants';
 
+// const initialState = {
+//   board: null,
+//   files: 0,
+//   columns: 0,
+//   state: "off",
+// }
+
 const initialState = {
-  board: null,
-  files: 0,
-  columns: 0,
-  state: "off",
+  board: [["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"]],
+  files: 5,
+  columns: 5,
+  state: "playing",
 }
 
 export default function authors(state = initialState, action) {

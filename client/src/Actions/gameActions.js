@@ -50,3 +50,18 @@ export function startGame() {
     )
   }
 }
+
+
+export function resumeGame() {
+
+  return (dispatch, getState) => {
+    
+    return fetchGameState()
+    .then(
+      (gameState) => {
+        dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
+        dispatch(setSafePoints(gameState.safepoints))
+      }
+    )
+  }
+}
