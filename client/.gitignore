@@ -9,7 +9,7 @@
 /coverage
 
 # ignoring build until it needs to be deployed
-/build
+# /build
 
 # misc
 .DS_Store
