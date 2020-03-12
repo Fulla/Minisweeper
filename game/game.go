@@ -1,10 +1,12 @@
 package game
 
-import "sync"
+import (
+	"sync"
+)
 
 type Point struct {
-	file   int
-	column int
+	File   int `json:"file"`
+	Column int `json:"column"`
 }
 
 type Game struct {

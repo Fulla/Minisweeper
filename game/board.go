@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type Board struct {
@@ -40,8 +41,8 @@ func (b *Board) randomMineExcept(safe Point) {
 		if b.isMine(p) {
 			continue
 		}
-
-		break
+		b.setMine(p)
+		return
 	}
 }
 
@@ -57,15 +58,15 @@ func (b *Board) generateMines(safe Point) error {
 
 func (b *Board) surroundingTiles(target Point) []Point {
 	surroundings := []Point{}
-	for x := target.file - 1; x <= target.file+1; x++ {
-		for y := target.column - 1; y <= target.column+1; y++ {
+	for x := target.File - 1; x <= target.File+1; x++ {
+		for y := target.Column - 1; y <= target.Column+1; y++ {
 			if x < 0 || x >= b.files {
 				continue
 			}
 			if y < 0 || y >= b.columns {
 				continue
 			}
-			if x == target.file && y == target.column {
+			if x == target.File && y == target.Column {
 				continue
 			}
 			surroundings = append(surroundings, Point{x, y})
@@ -90,19 +91,28 @@ func (b *Board) numberOfMines(points []Point) (number int) {
 func (b *Board) discover(point Point, omit func(Point) bool) (map[Point]int, bool) {
 	discovered := make(map[Point]int)
 	if b.isMine(point) {
+		logrus.WithField("point", point).Infof("Pushed mine")
 		return discovered, true
 	}
 	remaining := make(chan Point, 32)
 	remaining <- point
 
-	for p := range remaining {
-		surr := b.surroundingTiles(point)
+	var current Point
+LOOP:
+	for {
+		select {
+		case current = <-remaining:
+		default:
+			break LOOP
+		}
+		logrus.WithField("point", current).Infof("Discovering")
+		surr := b.surroundingTiles(current)
 		number := b.numberOfMines(surr)
 
-		if _, ok := discovered[p]; ok || omit(p) {
+		if _, ok := discovered[current]; ok || omit(current) {
 			continue
 		}
-		discovered[p] = number
+		discovered[current] = number
 		if number != 0 {
 			continue
 		}

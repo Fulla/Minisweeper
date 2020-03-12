@@ -46,10 +46,10 @@ import (
 type ExportedClientBoard struct {
 	FullExport bool                    `json:"fullExport"`
 	State      string                  `json:"state"`
-	SafePoints map[string][]game.Point `json:"safePoints"`
-	Flags      []game.Point            `json:"flags"`
+	SafePoints map[string][]game.Point `json:"safePoints" binding:"dive,dive,dive"`
+	Flags      []game.Point            `json:"flags" binding:"dive,dive"`
 	Mines      []game.Point            `json:"mines"`
-	Activated  *game.Point             `json:"activatedMine"`
+	Activated  *game.Point             `json:"activatedMine" binding:"dive"`
 	Files      int                     `json:"files"`
 	Columns    int                     `json:"columns"`
 }

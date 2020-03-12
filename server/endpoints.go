@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/Fulla/Minisweeper/game"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,6 +20,7 @@ func (s *Server) startGame(c *gin.Context) {
 		c.Error(err)
 		return
 	}
+	logrus.Infof("starting game with configuration: %+v", size)
 	g := s.gameMgr.StartGame(size.Files, size.Columns, size.Mines)
 	exported, err := s.gameMgr.ExportClientBoard(g)
 	if err != nil {
@@ -40,21 +42,22 @@ func (s *Server) resumeGame(c *gin.Context) {
 
 func (s *Server) discoverTile(c *gin.Context) {
 	g := s.gameMgr.GetGame()
-	logrus.Info("here")
+	state := g.State()
+	if state != "initial" && state != "playing" {
+		c.AbortWithError(400, errors.Errorf("Bad action: Trying to discover tile while not in active game"))
+		return
+	}
 	var point game.Point
 	err := c.BindJSON(&point)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	logrus.Infof("after parsing %+v", point)
 	g.Discover(point)
-	logrus.Info("after discover")
 	exported, err := s.gameMgr.ExportClientBoard(g)
 	if err != nil {
 		c.AbortWithError(500, err)
 		return
 	}
-	logrus.Info("exporting")
 	c.JSON(200, gin.H{"data": exported})
 }
