@@ -1,39 +1,19 @@
-# minesweeper-API
-API test
+# Minisweeper
 
-We ask that you complete the following challenge to evaluate your development skills. Please use the programming language and framework discussed during your interview to accomplish the following task.
+This is a test application to play the classic game of [Minesweeper](https://en.wikipedia.org/wiki/Minesweeper_(video_game))
 
-PLEASE DO NOT FORK THE REPOSITORY. WE NEED A PUBLIC REPOSITORY FOR THE REVIEW. 
+The server side is developed using Golang. The client has been created using React
 
-## The Game
-Develop the classic game of [Minesweeper](https://en.wikipedia.org/wiki/Minesweeper_(video_game))
+The game can be played at [Play](https://minesweeperfulla.herokuapp.com/)
 
-## Show your work
+The user recognition is very basic, and it's based on the clientIP; so you will be able to resume an existent game when you are joining the Minesweeper application from the same IP at which you started the game.
+However, the game just allows a few game instances, so maybe your game will be discarded if many players joined a new game after you stopped playing.
 
-1.  Create a Public repository ( please dont make a pull request, clone the private repository and create a new plublic one on your profile)
-2.  Commit each step of your process so we can follow your thought process.
+Also, there is no persistence yet, so your current game will be lost if the server resets.
 
-## What to build
-The following is a list of items (prioritized from most important to least important) we wish to see:
-* Design and implement  a documented RESTful API for the game (think of a mobile app for your API)
-* Implement an API client library for the API designed above. Ideally, in a different language, of your preference, to the one used for the API
-* When a cell with no adjacent mines is revealed, all adjacent squares will be revealed (and repeat)
-* Ability to 'flag' a cell with a question mark or red flag
-* Detect when game is over
-* Persistence
-* Time tracking
-* Ability to start a new game and preserve/resume the old ones
-* Ability to select the game parameters: number of rows, columns, and mines
-* Ability to support multiple users/accounts
- 
-## Deliverables we expect:
-* URL where the game can be accessed and played (use any platform of your preference: heroku.com, aws.amazon.com, etc)
-* Code in a public Github repo
-* README file with the decisions taken and important notes
+When persistence is implemented, the "exported" format can be used to save the `client board` it in the database as a json.
+The `board` can be marshaled to json as it is.
 
-## Time Spent
-You do not need to fully complete the challenge. We suggest not to spend more than 5 hours total, which can be done over the course of 2 days.  Please make commits as often as possible so we can see the time you spent and please do not make one commit.  We will evaluate the code and time spent.
- 
-What we want to see is how well you handle yourself given the time you spend on the problem, how you think, and how you prioritize when time is insufficient to solve everything.
+I run out of time to implement the "flag" action, but as it's not a fundamental action I decided to add that feature later.
 
-Please email your solution as soon as you have completed the challenge or the time is up.
+The client is very dull, but I plan to improve it in time.
