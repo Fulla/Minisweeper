@@ -1,17 +1,10 @@
 import { START_BOARD, SET_SAFEPOINTS, SET_MINES, SET_ACTIVATED, SET_STATUS } from '../constants';
 
-// const initialState = {
-//   board: null,
-//   files: 0,
-//   columns: 0,
-//   state: "off",
-// }
-
 const initialState = {
-  board: [["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"],["2"," ","1","2","4"]],
-  files: 5,
-  columns: 5,
-  status: "playing",
+  board: null,
+  files: 0,
+  columns: 0,
+  status: "off",
 }
 
 function outside_board(x, y, state) {
@@ -19,6 +12,7 @@ function outside_board(x, y, state) {
 }
 
 export default function authors(state = initialState, action) {
+  let newBoard = [];
   switch (action.type) {
     case START_BOARD:
       let b = [...Array(action.files)].map(item => Array(action.columns).fill("")) 
@@ -29,64 +23,61 @@ export default function authors(state = initialState, action) {
         columns: action.columns,
         status: action.state,
       }
-      break
     case SET_SAFEPOINTS:
-      var newBoard = [];
+      newBoard = []
       for (var i = 0; i < state.board.length; i++) {
         newBoard[i] = state.board[i].slice();
-      }
-        
+      } 
       for (let num in action.safepoints) {
         let sfpoints = action.safepoints[num]
         for (let sf of sfpoints) {
-          if (outside_board(sf.x, sf.y, state)) {
+          if (outside_board(sf.file, sf.column, state)) {
             continue
           }
-          newBoard[sf.x][sf.y] = num
+          newBoard[sf.file][sf.column] = num
         }
       }
       return {
         ...state,
         board: newBoard,
       }
-      break
     case SET_MINES:
-      var newBoard = [];
+      newBoard = []
       for (var i = 0; i < state.board.length; i++) {
         newBoard[i] = state.board[i].slice();
       }
       for (let m of action.mines) {
-        if (outside_board(m.x, m.y, state)) {
+        if (outside_board(m.file, m.column, state)) {
           continue
         }
-        newBoard[m.x][m.y] = "*"
+        newBoard[m.file][m.column] = "*"
       }
       return {
         ...state,
         board: newBoard,
       }
-      break
     case SET_ACTIVATED:
-      let m = action.activated
-      if (outside_board(m.x, m.y, state)) {
+      let activ = action.activated
+      if (activ == null) {
         return state
       }
-      var newBoard = [];
+      if (outside_board(activ.file, activ.column, state)) {
+        return state
+      }
+      newBoard = [];
       for (var i = 0; i < state.board.length; i++) {
         newBoard[i] = state.board[i].slice();
       }
-      newBoard[m.x][m.y] = "X"
+      newBoard[activ.file][activ.column] = "X"
       return {
         ...state,
         board: newBoard,
       }
-      break
     case SET_STATUS:
       return {
         ...state,
-        status: action.status
+        status: action.state
       }
-      break
     default:
       return state
   }

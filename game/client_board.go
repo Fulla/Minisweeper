@@ -14,6 +14,7 @@ func NewClientBoard() *ClientBoard {
 	return &ClientBoard{
 		safePoints: make(map[Point]int, 0),
 		flags:      make(map[Point]bool, 0),
+		mines:      make([]Point, 0),
 	}
 }
 
@@ -56,7 +57,11 @@ func (cl *ClientBoard) Mines() []Point {
 func (cl *ClientBoard) Flags() []Point {
 	cl.l.Lock()
 	defer cl.l.Unlock()
-	return cl.mines
+	flags := make([]Point, 0)
+	for fl := range cl.flags {
+		flags = append(flags, fl)
+	}
+	return flags
 }
 
 func (cl *ClientBoard) Activated() *Point {

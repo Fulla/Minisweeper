@@ -8,5 +8,6 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/common v0.9.1
 	github.com/sirupsen/logrus v1.4.2
+	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )

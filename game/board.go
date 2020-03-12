@@ -94,7 +94,7 @@ func (b *Board) discover(point Point, omit func(Point) bool) (map[Point]int, boo
 		logrus.WithField("point", point).Infof("Pushed mine")
 		return discovered, true
 	}
-	remaining := make(chan Point, 32)
+	remaining := make(chan Point, 2500)
 	remaining <- point
 
 	var current Point

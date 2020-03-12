@@ -27,9 +27,9 @@ class Board extends React.Component {
 			const { board } = this.props
             
 			return (
-				<div className="Table">
+				<div className="Container">
 					{ board != null && (
-						<table>
+						<table className="Table">
 							<tbody>
 								{this.renderRows(board)}
 							</tbody>

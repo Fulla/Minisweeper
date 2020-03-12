@@ -10,7 +10,7 @@ import (
 
 func main() {
 	c := context.Background()
-	gm := &gamesmanager.GamesManager{}
+	gm := gamesmanager.NewManager()
 	s := server.NewServer(gm)
 	s.Serve(c)
 }

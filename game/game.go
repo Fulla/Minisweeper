@@ -60,7 +60,7 @@ func (gm *Game) Discover(point Point) map[Point]int {
 		return discovered
 	}
 	gm.clientBoard.discoverSafePoints(discovered)
-
+	gm.checkEndCondition()
 	return discovered
 }
 

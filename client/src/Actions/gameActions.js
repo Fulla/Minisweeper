@@ -43,16 +43,15 @@ function setStatus(state) {
 // thunk actions
 
 
-export function startGame() {
+export function startGame(f, c, m) {
 
   return (dispatch) => {
     
-    return fetchStartGame(5, 5, 5)
+    return fetchStartGame(f, c, m)
     .then(
       (gameState) => {
 				console.log(gameState)
         dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
-        dispatch(setSafePoints(gameState.safepoints))
       }
     )
   }
@@ -68,7 +67,10 @@ export function resumeGame() {
       (gameState) => {
 				console.log(gameState)
         dispatch(startBoard(gameState.files, gameState.columns, gameState.state))
-        dispatch(setSafePoints(gameState.safepoints))
+				dispatch(setSafePoints(gameState.safePoints))
+				dispatch(setMines(gameState.mines))
+				dispatch(setActivatedMine(gameState.activatedMine))
+				dispatch(setStatus(gameState.state))
       }
     )
   }

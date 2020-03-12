@@ -21,7 +21,8 @@ func (s *Server) startGame(c *gin.Context) {
 		return
 	}
 	logrus.Infof("starting game with configuration: %+v", size)
-	g := s.gameMgr.StartGame(size.Files, size.Columns, size.Mines)
+	g := s.gameMgr.StartGame(c.Request.Context(), size.Files, size.Columns, size.Mines)
+	defer s.gameMgr.FreeGame()
 	exported, err := s.gameMgr.ExportClientBoard(g)
 	if err != nil {
 		c.AbortWithError(500, err)
@@ -31,7 +32,8 @@ func (s *Server) startGame(c *gin.Context) {
 }
 
 func (s *Server) resumeGame(c *gin.Context) {
-	g := s.gameMgr.GetGame()
+	g := s.gameMgr.GetGame(c.Request.Context())
+	defer s.gameMgr.FreeGame()
 	exported, err := s.gameMgr.ExportClientBoard(g)
 	if err != nil {
 		c.AbortWithError(500, err)
@@ -41,7 +43,8 @@ func (s *Server) resumeGame(c *gin.Context) {
 }
 
 func (s *Server) discoverTile(c *gin.Context) {
-	g := s.gameMgr.GetGame()
+	g := s.gameMgr.GetGame(c.Request.Context())
+	defer s.gameMgr.FreeGame()
 	state := g.State()
 	if state != "initial" && state != "playing" {
 		c.AbortWithError(400, errors.Errorf("Bad action: Trying to discover tile while not in active game"))
